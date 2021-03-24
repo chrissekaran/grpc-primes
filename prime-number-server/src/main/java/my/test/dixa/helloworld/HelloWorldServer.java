@@ -21,6 +21,8 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -79,11 +81,36 @@ public class HelloWorldServer {
         server.blockUntilShutdown();
     }
 
+    private static List<Integer> calculatePrimeNumbersUpto(int primeNumber) {
+        int i, j, c;
+        List<Integer> primeList = new ArrayList<>();
+        for (i = 2; i <= primeNumber; i++) {
+            c = 0;
+            for (j = 1; j <= i; j++) {
+                if (i % j == 0) {
+                    c++;
+                }
+            }
+            if (c == 2) {
+                primeList.add(i);
+                System.out.print(i + " ");
+            }
+        }
+        return primeList;
+    }
+
     public static class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
         @Override
-        public void sayHello(HelloRequest req, StreamObserver<HelloReply> responseObserver) {
-            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + req.getName()).build();
+        public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
+            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + request.getName()).build();
+            responseObserver.onNext(reply);
+            responseObserver.onCompleted();
+        }
+
+        @Override
+        public void primeNumbers(PrimeNumberRequest request, StreamObserver<PrimeNumberResponse> responseObserver) {
+            PrimeNumberResponse reply = PrimeNumberResponse.newBuilder().addAllNumber(calculatePrimeNumbersUpto(request.getLimit())).build();
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
         }

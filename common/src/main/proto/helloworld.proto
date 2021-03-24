@@ -24,8 +24,18 @@ package helloworld;
 service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
+
+  rpc PrimeNumbers ( PrimeNumberRequest) returns ( PrimeNumberResponse) {}
+
 }
 
+
+message PrimeNumberRequest {
+  int32 limit = 1;
+}
+message PrimeNumberResponse {
+  repeated int32 number = 1;
+}
 // The request message containing the user's name.
 message HelloRequest {
   string name = 1;

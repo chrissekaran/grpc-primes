@@ -25,6 +25,7 @@ import my.test.dixa.helloworld.GreeterGrpc;
 import my.test.dixa.helloworld.HelloReply;
 import my.test.dixa.helloworld.HelloRequest;
 import my.test.dixa.proxy.HelloWorldClient;
+import my.test.dixa.proxy.PrimeService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class HelloWorldClientTest {
                         // }
                     }));
 
-    private HelloWorldClient client;
+    private PrimeService client;
 
     @Before
     public void setUp() throws Exception {
@@ -85,7 +86,7 @@ public class HelloWorldClientTest {
                 InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
         // Create a HelloWorldClient using the in-process channel;
-        client = new HelloWorldClient(channel);
+        client = new PrimeService(channel);
     }
 
     /**

@@ -21,10 +21,9 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
-import my.test.dixa.helloworld.GreeterGrpc;
-import my.test.dixa.helloworld.HelloReply;
-import my.test.dixa.helloworld.HelloRequest;
-import my.test.dixa.proxy.HelloWorldClient;
+import my.test.dixa.primenumber.PrimeNumberGrpc;
+import my.test.dixa.primenumber.PrimeNumberRequest;
+import my.test.dixa.primenumber.PrimeNumberResponse;
 import my.test.dixa.proxy.PrimeService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for {@link HelloWorldClient}.
+ * Unit tests for {@link PrimeNumberClient}.
  * For demonstrating how to write gRPC unit test only.
  * Not intended to provide a high code coverage or to test every major usecase.
  * <p>
@@ -49,7 +48,7 @@ import static org.mockito.Mockito.verify;
  * the default executor, to avoid hitting bug #3084.
  */
 @RunWith(JUnit4.class)
-public class HelloWorldClientTest {
+public class PrimeNumberClientTest {
     /**
      * This rule manages automatic graceful shutdown for the registered servers and channels at the
      * end of test.
@@ -57,17 +56,10 @@ public class HelloWorldClientTest {
     @Rule
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
-    private final GreeterGrpc.GreeterImplBase serviceImpl =
-            mock(GreeterGrpc.GreeterImplBase.class, delegatesTo(
-                    new GreeterGrpc.GreeterImplBase() {
-                        // By default the client will receive Status.UNIMPLEMENTED for all RPCs.
-                        // You might need to implement necessary behaviors for your test here, like this:
-                        //
-                        // @Override
-                        // public void sayHello(HelloRequest request, StreamObserver<HelloReply> respObserver) {
-                        //   respObserver.onNext(HelloReply.getDefaultInstance());
-                        //   respObserver.onCompleted();
-                        // }
+    private final PrimeNumberGrpc.PrimeNumberImplBase serviceImpl =
+            mock(PrimeNumberGrpc.PrimeNumberImplBase.class, delegatesTo(
+                    new PrimeNumberGrpc.PrimeNumberImplBase() {
+
                     }));
 
     private PrimeService client;
@@ -94,14 +86,14 @@ public class HelloWorldClientTest {
      * changes from the server side.
      */
     @Test
-    public void greet_messageDeliveredToServer() {
+    public void primeNumberMessageDeliveredToServer() {
 
-        ArgumentCaptor<HelloRequest> requestCaptor = ArgumentCaptor.forClass(HelloRequest.class);
+        ArgumentCaptor<PrimeNumberRequest> requestCaptor = ArgumentCaptor.forClass(PrimeNumberRequest.class);
 
-        client.greet("test name");
+        client.primeNumber(5);
 
         verify(serviceImpl)
-                .sayHello(requestCaptor.capture(), ArgumentMatchers.<StreamObserver<HelloReply>>any());
-        assertEquals("test name", requestCaptor.getValue().getName());
+                .primeNumbers(requestCaptor.capture(), ArgumentMatchers.<StreamObserver<PrimeNumberResponse>>any());
+        assertEquals("Using 5 limit", 5, requestCaptor.getValue().getLimit());
     }
 }

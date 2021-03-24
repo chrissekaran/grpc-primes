@@ -14,6 +14,10 @@ public class PrimeEndpoint {
     @Autowired
     private PrimeService service;
 
+    public PrimeEndpoint(PrimeService service) {
+        this.service = service;
+    }
+
     @GetMapping("/prime/number/{number}")
     ResponseEntity<List<Integer>> primeNumber(@PathVariable("number") int number) {
         return ResponseEntity.ok(service.primeNumber(number));

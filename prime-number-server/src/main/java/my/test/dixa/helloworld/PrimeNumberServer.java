@@ -19,6 +19,9 @@ package my.test.dixa.helloworld;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import my.test.dixa.primenumber.PrimeNumberGrpc;
+import my.test.dixa.primenumber.PrimeNumberRequest;
+import my.test.dixa.primenumber.PrimeNumberResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,8 +32,8 @@ import java.util.logging.Logger;
 /**
  * Server that manages startup/shutdown of a {@code Greeter} server.
  */
-public class HelloWorldServer {
-    private static final Logger logger = Logger.getLogger(HelloWorldServer.class.getName());
+public class PrimeNumberServer {
+    private static final Logger logger = Logger.getLogger(PrimeNumberServer.class.getName());
 
     private Server server;
 
@@ -38,7 +41,7 @@ public class HelloWorldServer {
         /* The port on which the server should run */
         int port = 50051;
         server = ServerBuilder.forPort(port)
-                .addService(new GreeterImpl())
+                .addService(new PrimeNumberImpl())
                 .build()
                 .start();
         logger.info("Server started, listening on " + port);
@@ -48,7 +51,7 @@ public class HelloWorldServer {
                 // Use stderr here since the logger may have been reset by its JVM shutdown hook.
                 System.err.println("*** shutting down gRPC server since JVM is shutting down");
                 try {
-                    HelloWorldServer.this.stop();
+                    PrimeNumberServer.this.stop();
                 } catch (InterruptedException e) {
                     e.printStackTrace(System.err);
                 }
@@ -76,7 +79,7 @@ public class HelloWorldServer {
      * Main launches the server from the command line.
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        final HelloWorldServer server = new HelloWorldServer();
+        final PrimeNumberServer server = new PrimeNumberServer();
         server.start();
         server.blockUntilShutdown();
     }
@@ -99,14 +102,7 @@ public class HelloWorldServer {
         return primeList;
     }
 
-    public static class GreeterImpl extends GreeterGrpc.GreeterImplBase {
-
-        @Override
-        public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
-            HelloReply reply = HelloReply.newBuilder().setMessage("Hello " + request.getName()).build();
-            responseObserver.onNext(reply);
-            responseObserver.onCompleted();
-        }
+    public static class PrimeNumberImpl extends PrimeNumberGrpc.PrimeNumberImplBase {
 
         @Override
         public void primeNumbers(PrimeNumberRequest request, StreamObserver<PrimeNumberResponse> responseObserver) {

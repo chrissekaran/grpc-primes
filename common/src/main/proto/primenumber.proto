@@ -14,34 +14,22 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "my.test.dixa.helloworld";
-option java_outer_classname = "HelloWorldProto";
+option java_package = "my.test.dixa.primenumber";
+option java_outer_classname = "PrimeNumberProto";
 option objc_class_prefix = "HLW";
 
-package helloworld;
+package primenumber;
 
-// The greeting service definition.
-service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+// The PrimeNumber service definition.
+service PrimeNumber {
 
-  rpc PrimeNumbers ( PrimeNumberRequest) returns ( PrimeNumberResponse) {}
+  rpc PrimeNumbers ( PrimeNumberRequest) returns (PrimeNumberResponse) {}
 
 }
-
 
 message PrimeNumberRequest {
   int32 limit = 1;
 }
 message PrimeNumberResponse {
   repeated int32 number = 1;
-}
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
-}
-
-// The response message containing the greetings
-message HelloReply {
-  string message = 1;
 }

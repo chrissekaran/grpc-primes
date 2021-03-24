@@ -16,51 +16,41 @@
 
 package my.test.dixa.proxy;
 
-import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.StatusRuntimeException;
-import my.test.dixa.helloworld.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import my.test.dixa.primenumber.PrimeNumberGrpc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import javax.annotation.PreDestroy;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * A simple client that requests a greeting from the {@link HelloWorldServer}.
  */
 @SpringBootApplication
-public class HelloWorldClient {
-    private static final Logger logger = Logger.getLogger(HelloWorldClient.class.getName());
+public class PrimeNumberClient {
+    private static final Logger logger = Logger.getLogger(PrimeNumberClient.class.getName());
 
-    /**
-     * Greet server. If provided, the first element of {@code args} is the name to use in the
-     * greeting. The second argument is the target server.
-     */
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(HelloWorldClient.class, args);
+        SpringApplication.run(PrimeNumberClient.class, args);
     }
 
+    /**
+     * We're hard coding up the port and server to be localhost:XX for now
+     * @return
+     */
     @Bean
     public ManagedChannel managedChannel() {
         String target = "localhost:50051";
         ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
-                // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
-                // needing certificates.
                 .usePlaintext()
                 .build();
         return channel;
     }
 
     @Bean
-    public GreeterGrpc.GreeterBlockingStub blockingStub(ManagedChannel channel) {
-        return GreeterGrpc.newBlockingStub(channel);
+    public PrimeNumberGrpc.PrimeNumberBlockingStub blockingStub(ManagedChannel channel) {
+        return PrimeNumberGrpc.newBlockingStub(channel);
     }
-
-
 }

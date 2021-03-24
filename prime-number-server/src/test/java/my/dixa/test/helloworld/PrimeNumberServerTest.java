@@ -16,13 +16,14 @@
 
 package my.dixa.test.helloworld;
 
+import com.google.common.collect.Lists;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
-import my.test.dixa.helloworld.GreeterGrpc;
-import my.test.dixa.helloworld.HelloReply;
-import my.test.dixa.helloworld.HelloRequest;
-import my.test.dixa.helloworld.HelloWorldServer;
+import my.test.dixa.helloworld.*;
+import my.test.dixa.primenumber.PrimeNumberGrpc;
+import my.test.dixa.primenumber.PrimeNumberRequest;
+import my.test.dixa.primenumber.PrimeNumberResponse;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ import org.junit.runners.JUnit4;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Unit tests for {@link HelloWorldServer}.
+ * Unit tests for {@link PrimeNumberServer}.
  * For demonstrating how to write gRPC unit test only.
  * Not intended to provide a high code coverage or to test every major usecase.
  * <p>
@@ -40,7 +41,7 @@ import static org.junit.Assert.assertEquals;
  * the default executor, to avoid hitting bug #3084.
  */
 @RunWith(JUnit4.class)
-public class HelloWorldServerTest {
+public class PrimeNumberServerTest {
     /**
      * This rule manages automatic graceful shutdown for the registered servers and channels at the
      * end of test.
@@ -53,22 +54,22 @@ public class HelloWorldServerTest {
      * behaviors or state changes from the client side.
      */
     @Test
-    public void greeterImpl_replyMessage() throws Exception {
+    public void primeNumberImplReplyMessage() throws Exception {
         // Generate a unique in-process server name.
         String serverName = InProcessServerBuilder.generateName();
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
         grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(new HelloWorldServer.GreeterImpl()).build().start());
+                .forName(serverName).directExecutor().addService(new PrimeNumberServer.PrimeNumberImpl()).build().start());
 
-        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(
+        PrimeNumberGrpc.PrimeNumberBlockingStub blockingStub = PrimeNumberGrpc.newBlockingStub(
                 // Create a client channel and register for automatic graceful shutdown.
                 grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build()));
 
 
-        HelloReply reply =
-                blockingStub.sayHello(HelloRequest.newBuilder().setName("test name").build());
-
-        assertEquals("Hello test name", reply.getMessage());
+        PrimeNumberResponse reply =
+                blockingStub.primeNumbers(PrimeNumberRequest.newBuilder().setLimit(5).build());
+        assertEquals("PrimeNumber list", Lists.newArrayList(2, 3, 5), reply.getNumberList());
+        assertEquals("PrimeNumber list size", 3, reply.getNumberList().size());
     }
 }
